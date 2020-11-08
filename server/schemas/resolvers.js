@@ -1,7 +1,6 @@
-const { User } = require('../models');
+const { User, Book } = require('../models');
 const { signToken } = require('../utils/auth');
 const { AuthenticationError } = require('apollo-server-express');
-
 
 const resolvers = {
   Query: {
@@ -9,34 +8,40 @@ const resolvers = {
       if(context.user) {
         const userData = await User.findOne({ _id: context.user._id })
           .select('-__v -password')
+      
       return userData;
       }
-      throw new AuthenticationError('Not logged in');
+
+      throw new AuthenticationError('You are not logged in.');
     }
   },
+
   Mutation: {
+
     login: async (parent, { email, password }) => {
-
       const user = await User.findOne({ email });
-      if (!user) {
-        throw new AuthenticationError('Incorrect credentials');
-      }
 
+      if (!user) {
+        throw new AuthenticationError('Those credentials are incorrect.');
+      }
+      
       const correctPw = await user.isCorrectPassword(password);
+
       if (!correctPw) {
-        throw new AuthenticationError('Incorrect credentials');
+        throw new AuthenticationError('Those credentials are incorrect.');
       }
 
       const token = signToken(user);
-
       return { token, user };
     },
+
     addUser: async (parent, args) => {
         const user = await User.create(args);
         const token = signToken(user);
   
         return { token, user };
       },
+  
     saveBook: async (parent, { input }, context) => {
       if (context.user) {
         const updatedUser = await User.findByIdAndUpdate(
@@ -46,8 +51,9 @@ const resolvers = {
         );
         return updatedUser;
       }
-      throw new AuthenticationError('Please log in to perform this action.')
+      throw new AuthenticationError('Please log in.')
     },
+
     removeBook: async (parent, args, context) => {
       if (context.user) {
         const updatedUser = await User.findOneAndUpdate(
@@ -57,7 +63,7 @@ const resolvers = {
         );
         return updatedUser;
       }
-      throw new AuthenticationError('Please log in to perform this action.')
+      throw new AuthenticationError('Please log in.')
     } 
   }
 };
