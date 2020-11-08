@@ -12,7 +12,9 @@
   
 
   ## Description  
-  Tap into Google's boundless selection of books using a sleek and user friendly search feature. Log in to save your favorites to your own personal library. 
+  Tap into Google's boundless selection of books using a sleek and user friendly search feature. Log in to save your favorites to your own personal library.  
+    
+  [Link to live page.](https://jessicajernigan.github.io/week21-challenge_MERN-book-search-engine/)
 
   ## Usage
   ### Search for books...
